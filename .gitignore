@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Video / model artifacts (large, download/generate separately)
+data/demo/*.mp4
+!data/demo/.gitkeep
+models/*.pt
+!models/.gitkeep
+
+# OS / editor
+.DS_Store
+.vscode/
+*.log
