@@ -41,11 +41,28 @@ class VideoPipeline:
         self.trend_predictor = TrendPredictor()
         self.last_heatmap = None  # normalized float32 array, read by /api/heatmap-ish consumers
         self.last_annotated_jpeg = None  # bytes, read by the MJPEG stream endpoint
+        self.last_heatmap_jpeg = None
         self._frame_lock = threading.Lock()
+        self._create_standby_frame()
+
+    def _create_standby_frame(self):
+        frame = np.full((540, 960, 3), (25, 25, 30), dtype=np.uint8)
+        cv2.putText(frame, "WARIMIND AI - VISION ACTIVE", (30, 240), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(frame, "Live crowd video feed stream initialized", (30, 290), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 220, 255), 1, cv2.LINE_AA)
+        cv2.putText(frame, "RECORDED VIDEO • LIVE FEED SIMULATION", (30, 480), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 180, 180), 1, cv2.LINE_AA)
+        ok_jpg, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+        if ok_jpg:
+            with self._frame_lock:
+                self.last_annotated_jpeg = buf.tobytes()
+                self.last_heatmap_jpeg = buf.tobytes()
 
     def get_latest_jpeg(self):
         with self._frame_lock:
             return self.last_annotated_jpeg
+
+    def get_latest_heatmap_jpeg(self):
+        with self._frame_lock:
+            return self.last_heatmap_jpeg or self.last_annotated_jpeg
 
     def _annotate(self, frame, tracked, fps, risk_level):
         out = frame.copy()
@@ -213,9 +230,19 @@ class VideoPipeline:
 
                 annotated = self._annotate(frame, tracked, fps, risk["level"])
                 ok_jpg, buf = cv2.imencode(".jpg", annotated, [cv2.IMWRITE_JPEG_QUALITY, 80])
+                
+                # Generate blended Heatmap Overlay stream frame
+                heatmap_overlay = annotated.copy()
+                if self.last_heatmap is not None:
+                    h_bgr = density.heatmap_to_bgr(self.last_heatmap)
+                    heatmap_overlay = cv2.addWeighted(annotated, 0.65, h_bgr, 0.35, 0)
+                ok_heat_jpg, heat_buf = cv2.imencode(".jpg", heatmap_overlay, [cv2.IMWRITE_JPEG_QUALITY, 80])
+
                 if ok_jpg:
                     with self._frame_lock:
                         self.last_annotated_jpeg = buf.tobytes()
+                        if ok_heat_jpg:
+                            self.last_heatmap_jpeg = heat_buf.tobytes()
 
             cap.release()
         except Exception as e:  # noqa: BLE001 - POC must surface errors, never crash silently

@@ -60,7 +60,7 @@ class PersonDetector:
         return self.device == "cuda"
 
     def detect(self, frame: np.ndarray):
-        if self.backend == "yolo":
+        if self.backend and self.backend.startswith("yolo"):
             return self._detect_yolo(frame)
         return self._detect_hog(frame)
 

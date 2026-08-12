@@ -1,15 +1,24 @@
 import asyncio
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import router
+from app.api.routes import router, _pipeline
 from app.state import state
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(message)s")
 
-app = FastAPI(title="WariMind AI - POC Backend")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logging.info("Auto-starting WariMind AI Scenario Pipeline on backend startup...")
+    _pipeline.start(mode="SCENARIO")
+    yield
+
+
+app = FastAPI(title="WariMind AI - POC Backend", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

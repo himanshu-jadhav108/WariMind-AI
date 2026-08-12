@@ -11,10 +11,18 @@ router = APIRouter()
 _pipeline = VideoPipeline()
 
 
-def _mjpeg_generator():
+def _mjpeg_generator(feed_type: str = "vision"):
     boundary = b"--frame"
     while True:
-        jpeg = _pipeline.get_latest_jpeg()
+        if feed_type == "heatmap":
+            jpeg = _pipeline.get_latest_heatmap_jpeg()
+        else:
+            jpeg = _pipeline.get_latest_jpeg()
+
+        if jpeg is None:
+            _pipeline._create_standby_frame()
+            jpeg = _pipeline.get_latest_jpeg()
+
         if jpeg is not None:
             yield boundary + b"\r\nContent-Type: image/jpeg\r\n\r\n" + jpeg + b"\r\n"
         time.sleep(1 / settings.TARGET_DISPLAY_FPS)
@@ -22,7 +30,12 @@ def _mjpeg_generator():
 
 @router.get("/api/video/feed")
 def video_feed():
-    return StreamingResponse(_mjpeg_generator(), media_type="multipart/x-mixed-replace; boundary=frame")
+    return StreamingResponse(_mjpeg_generator(feed_type="vision"), media_type="multipart/x-mixed-replace; boundary=frame")
+
+
+@router.get("/api/video/heatmap")
+def video_heatmap():
+    return StreamingResponse(_mjpeg_generator(feed_type="heatmap"), media_type="multipart/x-mixed-replace; boundary=frame")
 
 
 @router.get("/health")
