@@ -30,14 +30,17 @@ During the annual Pandharpur Wari pilgrimage in Maharashtra, India, millions of 
 
 WariMind AI acts as a **closed-loop crowd intelligence layer**:
 
-```
-[ Elevated Video Feed ]
-          │
-          ▼
-[ YOLO11 1280px Detection ] ──► [ Centroid Tracking & Point-in-Polygon ]
-                                              │
-                                              ▼
-[ Field Action & Pilgrim Safety ] ◄── [ Predictive Risk & Decision Engine ]
+```mermaid
+flowchart LR
+    classDef feed fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#f8fafc;
+    classDef cv fill:#0f172a,stroke:#2563eb,stroke-width:2px,color:#93c5fd;
+    classDef analytics fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#a7f3d0;
+    classDef risk fill:#7f1d1d,stroke:#ef4444,stroke-width:2px,color:#fca5a5;
+
+    A["📹 Elevated Video Feed"]:::feed --> B["👁️ YOLO11 1280px Detection"]:::cv
+    B --> C["📍 Centroid Tracking & Point-in-Polygon"]:::analytics
+    C --> D["⚡ Risk Engine & Decision Support"]:::risk
+    D --> E["📱 Field Action & Pilgrim Safety"]:::feed
 ```
 
 ---
@@ -56,24 +59,26 @@ WariMind AI acts as a **closed-loop crowd intelligence layer**:
 
 Rather than building a passive monitoring dashboard, WariMind AI connects every layer of emergency response into one single source of truth:
 
-```
-HIGH-RES VIDEO FEED
-        ↓
-YOLO11 PERSON DETECTION (1280px, conf 0.20)
-        ↓
-CENTROID TRACKING & SMOOTHING
-        ↓
-POINT-IN-POLYGON ZONE ASSIGNMENT (Zones A, B, C, D)
-        ↓
-DENSITY & FLOW ANALYTICS
-        ↓
-PREDICTIVE RISK ENGINE (4-Component Weighted Formula)
-        ↓
-AI DECISION ENGINE (Recommended Actions & Alerts)
-        ↓
-┌───────────────────────┬───────────────────────┬───────────────────────┐
-↓                       ↓                       ↓                       ↓
-COMMAND CENTER UI      2D DIGITAL TWIN      VOLUNTEER MOBILE        PILGRIM COMPANION
+```mermaid
+flowchart TD
+    classDef video fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#f8fafc;
+    classDef vision fill:#0f172a,stroke:#2563eb,stroke-width:2px,color:#93c5fd;
+    classDef tracking fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#a7f3d0;
+    classDef analytics fill:#78350f,stroke:#f59e0b,stroke-width:2px,color:#fef08a;
+    classDef risk fill:#7f1d1d,stroke:#ef4444,stroke-width:2px,color:#fca5a5;
+    classDef ui fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#e0e7ff;
+
+    A["<b>HIGH-RES VIDEO FEED</b><br/><i>(1920x1080 Aerial Drone Footage)</i>"]:::video --> B["<b>YOLO11 PERSON DETECTION</b><br/><i>(1280px Resolution, Conf 0.20)</i>"]:::vision
+    B --> C["<b>CENTROID TRACKING & SMOOTHING</b><br/><i>(Persistent IDs & 5-Frame Deque)</i>"]:::tracking
+    C --> D["<b>POINT-IN-POLYGON ZONE ASSIGNMENT</b><br/><i>(cv2.pointPolygonTest - Zones A, B, C, D)</i>"]:::tracking
+    D --> E["<b>DENSITY & FLOW ANALYTICS</b><br/><i>(Spatial Concentration & Vectors ↗ NE)</i>"]:::analytics
+    E --> F["<b>PREDICTIVE RISK ENGINE</b><br/><i>(4-Component Weighted Score: 82/100)</i>"]:::risk
+    F --> G["<b>AI DECISION ENGINE</b><br/><i>(Automated Recommended Actions & Alerts)</i>"]:::risk
+    
+    G --> H["<b>COMMAND CENTER UI</b><br/><i>(16:9 Presentation Workspace)</i>"]:::ui
+    G --> I["<b>2D DIGITAL TWIN</b><br/><i>(Spatial Route Corridor View)</i>"]:::ui
+    G --> J["<b>VOLUNTEER MOBILE</b><br/><i>(390x844 Field Response App)</i>"]:::ui
+    G --> K["<b>PILGRIM COMPANION</b><br/><i>(390x844 Safety App)</i>"]:::ui
 ```
 
 ---
@@ -112,33 +117,45 @@ COMMAND CENTER UI      2D DIGITAL TWIN      VOLUNTEER MOBILE        PILGRIM COMP
 
 ```mermaid
 flowchart TD
-    subgraph Input ["Video Processing Layer"]
-        A[Elevated Wari Video Feed\ndemo_crowd.mp4 1920x1080] --> B[PersonDetector\nYOLO11 1280px / OpenCV HOG Fallback]
-        B --> C[CentroidTracker\nPersistent Track IDs]
+    classDef inputLayer fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#f8fafc;
+    classDef spatialLayer fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#a7f3d0;
+    classDef intelligenceLayer fill:#78350f,stroke:#f59e0b,stroke-width:2px,color:#fef08a;
+    classDef stateLayer fill:#4c1d95,stroke:#8b5cf6,stroke-width:2px,color:#f5f3ff;
+    classDef interfaceLayer fill:#1e1b4b,stroke:#6366f1,stroke-width:2px,color:#e0e7ff;
+
+    subgraph Input ["📹 Video Processing Layer"]
+        A["Elevated Wari Video Feed<br/><i>demo_crowd.mp4 1920x1080</i>"]:::inputLayer --> B["PersonDetector<br/><i>YOLO11 1280px / OpenCV HOG Fallback</i>"]:::inputLayer
+        B --> C["CentroidTracker<br/><i>Persistent Bounding-Box Track IDs</i>"]:::inputLayer
     end
 
-    subgraph Spatial ["Spatial & Temporal Analytics"]
-        C --> D[Point-in-Polygon Zone Engine\ncv2.pointPolygonTest]
-        D --> E[Temporal Smoothing Window\n5-Frame Deque]
-        E --> F[Flow & Direction Estimator\nMovement Vectors ↗ NE]
+    subgraph Spatial ["📍 Spatial & Temporal Analytics"]
+        C --> D["Point-in-Polygon Zone Engine<br/><i>cv2.pointPolygonTest (zones.json)</i>"]:::spatialLayer
+        D --> E["Temporal Smoothing Window<br/><i>5-Frame Rolling Window Deque</i>"]:::spatialLayer
+        E --> F["Flow & Direction Estimator<br/><i>Movement Vectors ↗ NE</i>"]:::spatialLayer
     end
 
-    subgraph Intelligence ["Risk & Decision Engine"]
-        E --> G[Predictive Risk Engine\nDensity 40% | Growth 25% | Flow 20% | Capacity 15%]
+    subgraph Intelligence ["⚡ Risk & Decision Engine"]
+        E --> G["Predictive Risk Engine<br/><i>Density 40% | Growth 25% | Flow 20% | Capacity 15%</i>"]:::intelligenceLayer
         F --> G
-        G --> H[AI Decision Engine\nRule-based Interventions]
+        G --> H["AI Decision Engine<br/><i>Automated Intervention Checklist & Alerts</i>"]:::intelligenceLayer
     end
 
-    subgraph State ["Single Source of Truth"]
-        H --> I[AppState Container\nbackend/app/state.py]
+    subgraph State ["🔄 Single Source of Truth"]
+        H --> I["AppState Container<br/><i>backend/app/state.py</i>"]:::stateLayer
     end
 
-    subgraph Presentation ["Multi-Role User Interfaces"]
-        I --> J[Command Center Dashboard\n16:9 Presentation Workspace]
-        I --> K[2D Digital Twin Route Map\nSpatial Corridor View]
-        I --> L[Volunteer Mobile App\n390x844 Field Response]
-        I --> M[Pilgrim Mobile Companion\n390x844 Safety View]
+    subgraph Presentation ["🖥️ Multi-Role User Interfaces"]
+        I --> J["Command Center Dashboard<br/><i>16:9 Presentation Workspace</i>"]:::interfaceLayer
+        I --> K["2D Digital Twin Route Map<br/><i>Spatial Corridor View</i>"]:::interfaceLayer
+        I --> L["Volunteer Mobile App<br/><i>390x844 Field Response (ACK Button)</i>"]:::interfaceLayer
+        I --> M["Pilgrim Mobile Companion<br/><i>390x844 Safety View (Warning & SOS)</i>"]:::interfaceLayer
     end
+
+    style Input fill:#0f172a,stroke:#1e293b,stroke-width:2px,color:#60a5fa
+    style Spatial fill:#022c22,stroke:#064e3b,stroke-width:2px,color:#34d399
+    style Intelligence fill:#451a03,stroke:#78350f,stroke-width:2px,color:#fbbf24
+    style State fill:#2e1065,stroke:#4c1d95,stroke-width:2px,color:#c084fc
+    style Presentation fill:#172554,stroke:#1e3a8a,stroke-width:2px,color:#818cf8
 ```
 
 ---
