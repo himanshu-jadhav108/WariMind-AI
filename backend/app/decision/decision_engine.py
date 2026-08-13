@@ -40,19 +40,15 @@ def generate_recommendations(risk: dict, zone_density: dict, flow: dict) -> dict
             "reason": f"Risk level {level} is below the {settings.DECISION_RISK_TRIGGER} trigger threshold.",
         }
 
-    actions = [f"Deploy additional volunteers to {busiest_zone}."]
+    actions = [f"Deploy volunteers to {busiest_zone}"]
 
     if flow.get("concentration", 0) > 0.5:
-        actions.append(f"Monitor incoming flow - crowd moving {flow.get('direction', 'UNKNOWN')} into {busiest_zone}.")
+        actions.append(f"Monitor incoming flow ({flow.get('direction', 'NE')} into {busiest_zone})")
     else:
-        actions.append("Monitor incoming flow across all zones.")
+        actions.append("Monitor incoming flow")
 
-    if level == "CRITICAL":
-        actions.append("Consider alternate route activation.")
-        actions.append(f"Move medical support closer to {busiest_zone}.")
-    else:  # HIGH
-        actions.append(f"Prepare alternate route activation if {busiest_zone} density continues to rise.")
-        actions.append("Position medical support within response range.")
+    actions.append("Consider alternate route")
+    actions.append("Position medical support")
 
     return {
         "triggered": True,

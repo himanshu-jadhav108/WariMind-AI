@@ -18,8 +18,9 @@ DEMO_VIDEO_PATH = os.path.join(PROJECT_ROOT, "data", "demo", "demo_crowd.mp4")
 MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
 YOLO_MODEL_PATH = os.path.join(MODELS_DIR, "yolo11n.pt")  # user downloads this; optional
 
-CONFIDENCE_THRESHOLD = 0.35          # detector confidence cutoff
-INFERENCE_WIDTH = 640                # frames resized to this width before inference
+CONFIDENCE_THRESHOLD = 0.20          # detector confidence cutoff (tuned for small aerial pilgrims)
+INFERENCE_WIDTH = 1280               # high-resolution inference for small-object recall
+NMS_THRESHOLD = 0.45                 # Non-Maximum Suppression IoU threshold
 PROCESS_EVERY_N_FRAMES = 1           # frame skipping for slow machines (1 = process every frame)
 TARGET_DISPLAY_FPS = 20
 

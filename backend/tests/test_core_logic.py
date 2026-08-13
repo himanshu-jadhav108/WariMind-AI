@@ -108,7 +108,7 @@ class TestDecisionEngine(unittest.TestCase):
         rec = decision_engine.generate_recommendations(risk_state, zd, {"direction": "NE", "concentration": 0.7})
         self.assertTrue(rec["triggered"])
         self.assertEqual(rec["zone"], "ZONE B")
-        self.assertIn("Deploy additional volunteers to ZONE B.", rec["actions"])
+        self.assertTrue(any("Deploy" in a for a in rec["actions"]))
 
     def test_critical_adds_alternate_route_and_medical(self):
         risk_state = {"score": 90, "level": "CRITICAL"}

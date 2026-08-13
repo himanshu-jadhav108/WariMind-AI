@@ -65,16 +65,28 @@ class PersonDetector:
         return self._detect_hog(frame)
 
     def _detect_yolo(self, frame: np.ndarray):
+        from app.config import settings
         results = self._yolo_model.predict(
-            frame, classes=[0], conf=self.confidence_threshold,
-            device=self.device, verbose=False,
+            frame,
+            imgsz=getattr(settings, "INFERENCE_WIDTH", 1280),
+            conf=self.confidence_threshold,
+            iou=getattr(settings, "NMS_THRESHOLD", 0.45),
+            classes=[0],
+            device=self.device,
+            verbose=False,
         )
         detections = []
         for r in results:
             for box in r.boxes:
                 x1, y1, x2, y2 = box.xyxy[0].tolist()
                 conf = float(box.conf[0])
-                detections.append({"bbox": [x1, y1, x2, y2], "confidence": conf})
+                area = (x2 - x1) * (y2 - y1)
+                detections.append({
+                    "bbox": [x1, y1, x2, y2],
+                    "confidence": conf,
+                    "area": area,
+                    "is_small": area < 1000.0,
+                })
         return detections
 
     def _detect_hog(self, frame: np.ndarray):

@@ -18,6 +18,14 @@ export const api = {
   startNormal: () => fetch(`${BASE}/normal/start`, { method: 'POST' }),
   acknowledgeVolunteer: () => fetch(`${BASE}/volunteer/acknowledge`, { method: 'POST' }),
   resetDemo: () => fetch(`${BASE}/demo/reset`, { method: 'POST' }),
+  getZones: () => getJSON('/zones'),
+  updateZones: (zones) => fetch(`${BASE}/zones/update`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ zones }),
+  }),
+  toggleDebug: () => fetch(`${BASE}/debug/toggle`, { method: 'POST' }),
+  benchmark: () => getJSON('/benchmark'),
 }
 
 /**

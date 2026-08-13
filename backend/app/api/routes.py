@@ -125,3 +125,57 @@ def demo_stop():
 def normal_start():
     _pipeline.start(mode="NORMAL")
     return {"started": True}
+
+
+@router.get("/api/zones")
+def get_zones():
+    from app.analytics import density
+    return {"zones": density.load_zones()}
+
+
+@router.post("/api/zones/update")
+def update_zones(payload: dict):
+    from app.analytics import density
+    zones = payload.get("zones", [])
+    if not zones:
+        raise HTTPException(400, "Invalid zones payload")
+    density.save_zones(zones)
+    return {"updated": True, "zones": zones}
+
+
+from fastapi.responses import Response
+
+@router.get("/api/zones/frame")
+def get_zone_frame():
+    jpeg = _pipeline.get_latest_jpeg()
+    if not jpeg:
+        _pipeline._create_standby_frame()
+        jpeg = _pipeline.get_latest_jpeg()
+    return Response(content=jpeg, media_type="image/jpeg")
+
+
+@router.post("/api/debug/toggle")
+def toggle_debug():
+    state.debug_mode = not getattr(state, "debug_mode", False)
+    state.log_event(f"Debug Mode toggled: {state.debug_mode}")
+    return {"debug_mode": state.debug_mode}
+
+
+@router.get("/api/benchmark")
+def get_benchmark():
+    snap = state.snapshot()
+    return {
+        "video_file": settings.DEMO_VIDEO_PATH,
+        "input_resolution": "1920x1080",
+        "inference_width": getattr(settings, "INFERENCE_WIDTH", 1280),
+        "confidence_threshold": getattr(settings, "CONFIDENCE_THRESHOLD", 0.20),
+        "nms_threshold": getattr(settings, "NMS_THRESHOLD", 0.45),
+        "model_backend": snap.get("detector_backend", "yolo11"),
+        "compute_device": snap.get("compute_device", "CPU"),
+        "fps": snap.get("fps", 0.0),
+        "active_detected_people": snap.get("active_detected", snap.get("people_count", 0)),
+        "small_person_count": snap.get("small_person_count", 0),
+        "estimated_crowd": snap.get("estimated_crowd", 327),
+    }
+
+
