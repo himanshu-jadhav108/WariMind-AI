@@ -1,5 +1,9 @@
 # WariMind AI
 
+<p align="center">
+  <img src="WariMind_AI_Logo.jpg" alt="WariMind AI Logo" width="180" />
+</p>
+
 ### AI-Powered Crowd Intelligence & Safety Platform for Wari
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)

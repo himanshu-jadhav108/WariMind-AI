@@ -14,12 +14,12 @@ export default function Logo({ size = 'md', showSubtitle = true, variant = 'ligh
     <div className={`flex items-center gap-3 ${className}`}>
       <div className="p-1 rounded-lg bg-white/10 border border-white/20 backdrop-blur-xs flex items-center justify-center shrink-0">
         <img
-          src="/WariMind_AI_Logo.svg"
+          src="/WariMind_AI_Logo.jpg"
           alt="WariMind AI Logo"
-          className={`${img} object-contain`}
+          className={`${img} object-contain rounded-md`}
           onError={(e) => {
-            if (!e.target.src.includes('logo.svg')) {
-              e.target.src = '/logo.svg'
+            if (!e.target.src.includes('WariMind_AI_Logo.svg')) {
+              e.target.src = '/WariMind_AI_Logo.svg'
             }
           }}
         />
