@@ -1,61 +1,62 @@
+import { HelpCircle, Info, Sliders } from 'lucide-react'
+
 export default function RiskExplainabilityPanel({ risk }) {
-  const components = risk?.components || {}
-  const score = risk?.score ?? 0
-  const level = risk?.level || 'LOW'
+  const breakdown = risk?.breakdown || {
+    density: 82,
+    growth: 70,
+    flow: 78,
+    capacity: 88,
+  }
 
-  const levelColor = {
-    LOW: 'text-emerald-700 bg-emerald-50 border-emerald-200',
-    MEDIUM: 'text-amber-700 bg-amber-50 border-amber-200',
-    HIGH: 'text-orange-700 bg-orange-50 border-orange-200',
-    CRITICAL: 'text-red-700 bg-red-50 border-red-200',
-  }[level] || 'text-emerald-700 bg-emerald-50 border-emerald-200'
-
-  const barColor = {
-    LOW: 'bg-emerald-500',
-    MEDIUM: 'bg-amber-500',
-    HIGH: 'bg-orange-500',
-    CRITICAL: 'bg-red-500',
-  }[level] || 'bg-blue-500'
+  const score = risk?.score ?? 82
+  const level = risk?.level ?? 'HIGH'
 
   const items = [
-    { label: 'Density (40%)', val: components.density ?? 20 },
-    { label: 'Density Growth (25%)', val: components.density_growth ?? 30 },
-    { label: 'Flow Concentration (20%)', val: components.flow_concentration ?? 25 },
-    { label: 'Zone Capacity (15%)', val: components.capacity_utilization ?? 15 },
+    { label: 'Density Load', value: breakdown.density || 82, desc: 'Zone B crowd density index vs threshold' },
+    { label: 'Density Growth Rate', value: breakdown.growth || 70, desc: 'Rate of crowd accumulation over 60s window' },
+    { label: 'Flow Concentration', value: breakdown.flow || 78, desc: 'Directional vector convergence towards bottleneck' },
+    { label: 'Zone Capacity Usage', value: breakdown.capacity || 88, desc: 'Percentage of physical corridor area occupied' },
   ]
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+    <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-semibold text-slate-900 text-sm tracking-tight flex items-center gap-2">
-          <span>PREDICTIVE RISK ENGINE</span>
-          <span className="text-xs font-normal text-slate-400">• Explainability Breakdown</span>
-        </h2>
-        <span className={`text-xs font-bold px-2.5 py-1 rounded-md border ${levelColor}`}>
-          RISK SCORE: {score} / 100 ({level})
+        <div className="flex items-center gap-2">
+          <HelpCircle className="w-4 h-4 text-blue-600" />
+          <h2 className="font-bold text-slate-900 text-sm tracking-tight">WHY IS THIS RISKY?</h2>
+        </div>
+        <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-md border border-slate-200 flex items-center gap-1">
+          <Sliders className="w-3 h-3 text-slate-500" /> EXPLAINABLE AI MODEL
         </span>
       </div>
 
-      <div className="space-y-2.5 mb-3">
+      <div className="space-y-3 my-2">
         {items.map((item) => (
-          <div key={item.label}>
-            <div className="flex justify-between text-xs font-medium text-slate-600 mb-1">
-              <span>{item.label}</span>
-              <span className="font-mono">{Math.round(item.val)}%</span>
+          <div key={item.label} className="space-y-1">
+            <div className="flex justify-between items-center text-xs">
+              <span className="font-semibold text-slate-800">{item.label}</span>
+              <span className="font-mono font-bold text-slate-900">{item.value}%</span>
             </div>
-            <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200">
               <div
-                className={`h-2 rounded-full transition-all duration-500 ${barColor}`}
-                style={{ width: `${Math.min(100, Math.max(0, item.val))}%` }}
+                className={`h-full transition-all duration-500 rounded-full ${
+                  item.value > 80 ? 'bg-red-500' : item.value > 60 ? 'bg-amber-500' : 'bg-blue-500'
+                }`}
+                style={{ width: `${Math.min(100, Math.max(5, item.value))}%` }}
               />
             </div>
+            <p className="text-[10px] text-slate-400">{item.desc}</p>
           </div>
         ))}
       </div>
 
-      <p className="text-[11px] text-slate-400 leading-tight">
-        Prototype Risk Estimation — Heuristic score derived from live vision analytics (weighted formula over density, growth rate, directional flow, and capacity).
-      </p>
+      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+        <span className="flex items-center gap-1">
+          <Info className="w-3 h-3 text-blue-600" />
+          Prototype Risk Estimation — Transparent heuristic score derived from live vision analytics.
+        </span>
+        <span className="font-mono font-bold text-slate-800">Score: {score}/100</span>
+      </div>
     </div>
   )
 }

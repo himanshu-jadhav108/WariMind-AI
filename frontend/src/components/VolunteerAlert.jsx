@@ -1,64 +1,70 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { AlertTriangle, CheckCircle2, Send, X } from 'lucide-react'
 import { api } from '../services/api'
 
 export default function VolunteerAlert({ alert }) {
-  const [closed, setClosed] = useState(false)
-  const [lastZone, setLastZone] = useState(null)
+  const [acknowledged, setAcknowledged] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [dismissed, setDismissed] = useState(false)
 
-  useEffect(() => {
-    if (alert && alert.zone !== lastZone) {
-      setClosed(false)
-      setLastZone(alert.zone)
-    }
-  }, [alert, lastZone])
-
-  if (!alert || closed || alert.acknowledged) return null
+  if (!alert || alert.acknowledged || acknowledged || dismissed) return null
 
   const handleAcknowledge = async () => {
-    setClosed(true)
+    setLoading(true)
     try {
       await api.acknowledgeVolunteer()
+      setAcknowledged(true)
     } catch (e) {
-      console.error('Failed to acknowledge alert:', e)
+      console.error('Failed to acknowledge volunteer alert:', e)
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 border-t-8 border-red-600 animate-in fade-in zoom-in duration-200">
-        <div className="flex items-center justify-between">
-          <span className="text-red-600 font-bold text-xs tracking-widest uppercase bg-red-50 px-2 py-0.5 rounded border border-red-200">
-            🚨 VOLUNTEER ALERT DISPATCHED
+    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl border-2 border-red-500 max-w-md w-full p-6 shadow-2xl animate-in zoom-in-95 duration-200">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-red-700 bg-red-100 border border-red-300 text-xs font-bold px-2.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1.5 animate-pulse">
+            <AlertTriangle className="w-3.5 h-3.5 text-red-600" />
+            FIELD DISPATCH ALERT
           </span>
-          <span className="text-xs text-slate-400 font-mono">PRIORITY: HIGH</span>
+          <button
+            onClick={() => setDismissed(true)}
+            className="text-slate-400 hover:text-slate-700 p-1 rounded-md"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
-        <h2 className="text-2xl font-bold text-slate-900 mt-2 tracking-tight">
-          {alert.title || 'HIGH CROWD RISK'}
-        </h2>
-        <p className="text-slate-600 text-sm font-medium">Target Zone: <span className="font-bold text-red-600">{alert.zone || 'ZONE B'}</span></p>
+        <h2 className="text-xl font-black text-slate-900">{alert.title || 'HIGH CROWD RISK — ZONE B'}</h2>
 
-        <div className="mt-4 bg-slate-50 rounded-xl p-3.5 border border-slate-200 space-y-2 text-xs">
+        <div className="mt-4 bg-red-50/80 rounded-xl p-3.5 border border-red-200 space-y-2 text-xs">
           <div>
-            <span className="font-semibold text-slate-500 uppercase block text-[10px]">Assigned Task:</span>
-            <span className="text-slate-900 font-medium text-sm">{alert.task || 'Move to Zone B immediately'}</span>
+            <span className="text-[10px] font-bold text-slate-500 uppercase block">Required Field Action:</span>
+            <span className="text-slate-900 font-bold text-sm">{alert.task || 'Move to Zone B immediately'}</span>
           </div>
           <div>
-            <span className="font-semibold text-slate-500 uppercase block text-[10px]">Trigger Reason:</span>
-            <span className="text-slate-800">{alert.reason || 'Increasing crowd density detected by vision pipeline.'}</span>
+            <span className="text-[10px] font-bold text-slate-500 uppercase block">Triggering Vision Analytics:</span>
+            <span className="text-slate-800">{alert.reason || 'Increasing crowd density & directional convergence detected.'}</span>
           </div>
         </div>
 
-        <button
-          onClick={handleAcknowledge}
-          className="mt-5 w-full bg-slate-900 text-white rounded-xl py-3 font-semibold text-sm hover:bg-slate-800 transition active:scale-98 shadow-md"
-        >
-          ✓ ACKNOWLEDGE RESPONSE
-        </button>
-
-        <p className="text-center text-[10px] text-slate-400 mt-2">
-          Demonstrates AI Decision Engine → Human Field Intervention workflow.
-        </p>
+        <div className="mt-5 flex items-center gap-3">
+          <button
+            onClick={handleAcknowledge}
+            disabled={loading}
+            className="w-full bg-red-600 hover:bg-red-700 text-white rounded-xl py-3 font-bold text-sm shadow-md transition active:scale-98 flex items-center justify-center gap-2"
+          >
+            {loading ? (
+              'SENDING ACKNOWLEDGEMENT...'
+            ) : (
+              <>
+                <Send className="w-4 h-4" /> ACKNOWLEDGE DISPATCH RESPONSE
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   )

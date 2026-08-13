@@ -1,16 +1,4 @@
-const LEVEL_COLOR = {
-  LOW: 'bg-emerald-50 text-emerald-800 border-emerald-300',
-  MEDIUM: 'bg-amber-50 text-amber-800 border-amber-300',
-  HIGH: 'bg-orange-50 text-orange-800 border-orange-400',
-  CRITICAL: 'bg-red-100 text-red-900 border-red-500',
-}
-
-const LEVEL_BADGE = {
-  LOW: 'bg-emerald-100 text-emerald-800 border-emerald-300',
-  MEDIUM: 'bg-amber-100 text-amber-800 border-amber-300',
-  HIGH: 'bg-orange-100 text-orange-800 border-orange-400',
-  CRITICAL: 'bg-red-200 text-red-900 border-red-500 animate-pulse',
-}
+import { Map, Compass, Activity, ShieldAlert, Crosshair, HeartPulse, UserCheck } from 'lucide-react'
 
 export default function DigitalTwin({ zoneDensity, recommendation }) {
   const zones = zoneDensity || {
@@ -20,90 +8,108 @@ export default function DigitalTwin({ zoneDensity, recommendation }) {
     'ZONE D': { count: 12, level: 'LOW' },
   }
 
-  const flaggedZone = recommendation?.triggered ? recommendation.zone : null
+  const isZoneBHigh = zones['ZONE B']?.level === 'HIGH' || zones['ZONE B']?.level === 'CRITICAL'
+
+  const zoneColorMap = {
+    LOW: { fill: 'bg-emerald-50', border: 'border-emerald-300', text: 'text-emerald-800', badge: 'bg-emerald-100 text-emerald-800' },
+    MEDIUM: { fill: 'bg-amber-50', border: 'border-amber-300', text: 'text-amber-800', badge: 'bg-amber-100 text-amber-800' },
+    HIGH: { fill: 'bg-red-50', border: 'border-red-400', text: 'text-red-900', badge: 'bg-red-200 text-red-900 font-bold' },
+    CRITICAL: { fill: 'bg-red-100', border: 'border-red-500', text: 'text-red-900', badge: 'bg-red-300 text-red-950 font-bold' },
+  }
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+    <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
       <div className="flex items-center justify-between mb-3">
-        <div>
-          <h2 className="font-semibold text-slate-900 text-sm tracking-tight">DIGITAL TWIN OPERATIONAL MAP</h2>
-          <p className="text-xs text-slate-500">2D Wari Pilgrimage Route • Real-time Zone Analytics</p>
+        <div className="flex items-center gap-2">
+          <Map className="w-4 h-4 text-blue-600" />
+          <h2 className="font-bold text-slate-900 text-sm tracking-tight">DIGITAL TWIN OPERATIONAL ROUTE MAP</h2>
         </div>
-        <span className="text-[11px] font-medium bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200">
-          PROTOTYPE MAP
+        <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200 flex items-center gap-1">
+          <Compass className="w-3 h-3 text-blue-600" /> WARI ROUTE PATH
         </span>
       </div>
 
-      {/* Operational 2D Map Canvas */}
-      <div className="relative aspect-video bg-slate-50 rounded-lg overflow-hidden border border-slate-200 p-3">
-        {/* SVG Route Line & Direction */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <path
-            d="M 10 75 Q 35 25 50 50 T 90 25"
-            stroke="#60a5fa"
-            strokeWidth="3"
-            fill="none"
-            strokeDasharray="4 2"
-          />
-          <polygon points="90,25 84,21 85,29" fill="#3b82f6" />
+      {/* Stylized Operational Route Canvas */}
+      <div className="relative aspect-video bg-slate-50 rounded-xl overflow-hidden border border-slate-200 p-4 flex flex-col justify-between shadow-inner">
+        {/* SVG Route Line Geometry */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none stroke-slate-300" strokeWidth="3" strokeDasharray="6 4" fill="none">
+          <path d="M 40,60 C 200,60 250,140 450,140 C 650,140 750,80 900,80" />
         </svg>
 
-        {/* Route Direction Label */}
-        <div className="absolute top-2 left-3 text-[10px] font-bold text-blue-600 tracking-wider flex items-center gap-1">
-          <span>WARI ROUTE FLOW</span>
-          <span>──────────────→</span>
+        {/* Top Header info */}
+        <div className="relative z-10 flex justify-between items-start text-xs font-semibold text-slate-600">
+          <span className="bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-md border border-slate-200 shadow-2xs flex items-center gap-1">
+            <Activity className="w-3 h-3 text-emerald-600" /> Live Density Grid
+          </span>
+          <span className="bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-md border border-slate-200 shadow-2xs font-mono">
+            SECTOR 1 - 4 CORRIDOR
+          </span>
         </div>
 
-        {/* 4 Route Zones Grid */}
-        <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-2.5 p-4 top-5">
-          {Object.entries(zones).map(([name, info]) => {
-            const isFlagged = flaggedZone === name || (name === 'ZONE B' && info.level === 'HIGH' || info.level === 'CRITICAL')
-            const style = LEVEL_COLOR[info.level] || LEVEL_COLOR.LOW
-            const badgeStyle = LEVEL_BADGE[info.level] || LEVEL_BADGE.LOW
+        {/* 4 Route Zones Layout */}
+        <div className="relative z-10 grid grid-cols-4 gap-3 my-auto">
+          {Object.entries(zones).map(([name, data]) => {
+            const style = zoneColorMap[data.level] || zoneColorMap.LOW
+            const isHigh = name === 'ZONE B' && isZoneBHigh
 
             return (
               <div
                 key={name}
-                className={`relative rounded-lg p-3 border-2 transition-all flex flex-col justify-between ${style} ${
-                  isFlagged ? 'ring-4 ring-red-400/40 border-red-500 shadow-md animate-pulse' : ''
+                className={`p-3 rounded-xl border transition-all duration-300 relative ${style.fill} ${style.border} ${
+                  isHigh ? 'ring-2 ring-red-400 shadow-md animate-pulse' : 'shadow-2xs'
                 }`}
               >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <span className="text-xs font-bold tracking-tight">{name}</span>
-                    <div className="text-lg font-bold leading-none mt-0.5">{info.count} <span className="text-[10px] font-normal text-slate-600">people</span></div>
-                  </div>
-                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${badgeStyle}`}>
-                    {info.level}
+                {/* Zone Label & Status */}
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-700">{name}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded border font-bold ${style.badge}`}>
+                    {data.level}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between text-[10px] mt-2 font-medium">
-                  <span className="text-slate-600">FLOW: ↗ CONVERGING</span>
-                  {isFlagged && (
-                    <span className="text-red-700 font-bold bg-white/90 px-1.5 py-0.5 rounded shadow-sm flex items-center gap-1 border border-red-300">
-                      <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-ping" />
-                      HIGH-RISK ZONE
-                    </span>
-                  )}
+                <div className="text-xl font-black text-slate-900 font-mono tracking-tight">
+                  {data.count} <span className="text-xs font-normal text-slate-500">ppl</span>
                 </div>
+
+                {/* Flow direction indicator */}
+                <div className="mt-2 pt-1.5 border-t border-slate-200/60 flex items-center justify-between text-[11px] font-semibold text-slate-600">
+                  <span className="flex items-center gap-0.5 text-blue-700">
+                    <Compass className="w-3 h-3" /> ↗ NE Flow
+                  </span>
+                </div>
+
+                {/* High Risk Overlay Label */}
+                {isHigh && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1 animate-bounce">
+                    <ShieldAlert className="w-2.5 h-2.5" /> HIGH-RISK ZONE
+                  </div>
+                )}
               </div>
             )
           })}
         </div>
 
-        {/* Static Operational Point Markers */}
-        <div className="absolute bottom-2 left-6 text-[10px] font-semibold bg-white/95 text-slate-700 px-2 py-0.5 rounded border border-slate-300 shadow-sm flex items-center gap-1">
-          <span>🏥 Medical Point 1</span>
-        </div>
-        <div className="absolute top-8 right-6 text-[10px] font-semibold bg-white/95 text-slate-700 px-2 py-0.5 rounded border border-slate-300 shadow-sm flex items-center gap-1">
-          <span>👤 Field Volunteer Alpha</span>
+        {/* Support Markers Strip (Medical, Volunteer, Incident) */}
+        <div className="relative z-10 flex items-center justify-between text-xs bg-white/95 backdrop-blur-xs p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+          <div className="flex items-center gap-4 text-[11px] font-medium text-slate-700">
+            <span className="flex items-center gap-1 text-emerald-700 font-semibold">
+              <HeartPulse className="w-3.5 h-3.5 text-emerald-600" /> 🏥 Medical Camp 1
+            </span>
+            <span className="flex items-center gap-1 text-blue-700 font-semibold">
+              <UserCheck className="w-3.5 h-3.5 text-blue-600" /> 👤 Volunteer Post C
+            </span>
+          </div>
+
+          {isZoneBHigh && (
+            <span className="text-[11px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded border border-red-200 flex items-center gap-1">
+              <Crosshair className="w-3 h-3 text-red-600 animate-spin" /> 🔴 Incident Focus: Zone B
+            </span>
+          )}
         </div>
       </div>
 
-      <div className="mt-2.5 flex items-center justify-between text-[11px] text-slate-400">
-        <span>Route geometry & markers are prototype representations</span>
-        <span className="font-mono text-slate-500">Zone Grid: 2×2 (A, B, C, D)</span>
+      <div className="mt-3 text-[11px] text-slate-400 text-center font-medium">
+        Prototype Digital Twin • 2D Spatial Route Representation
       </div>
     </div>
   )

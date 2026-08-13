@@ -22,8 +22,7 @@ export const api = {
 
 /**
  * Polls all dashboard endpoints on an interval and delivers a merged
- * snapshot via onUpdate. Falls back to plain polling (no websocket) so it
- * works identically on any network setup during the live demo.
+ * snapshot via onUpdate. Uses Promise.allSettled for maximum reliability.
  */
 export function startPolling(onUpdate, intervalMs = 1000) {
   let cancelled = false
@@ -31,10 +30,20 @@ export function startPolling(onUpdate, intervalMs = 1000) {
   async function tick() {
     if (cancelled) return
     try {
-      const [status, analytics, risk, recommendations, events] = await Promise.all([
+      const results = await Promise.allSettled([
         api.status(), api.analytics(), api.risk(), api.recommendations(), api.events(),
       ])
-      onUpdate({ status, analytics, risk, recommendations, events: events.events })
+
+      const snapshot = {
+        status: results[0].status === 'fulfilled' ? results[0].value : null,
+        analytics: results[1].status === 'fulfilled' ? results[1].value : null,
+        risk: results[2].status === 'fulfilled' ? results[2].value : null,
+        recommendations: results[3].status === 'fulfilled' ? results[3].value : null,
+        events: results[4].status === 'fulfilled' ? results[4].value?.events : [],
+        error: results.some(r => r.status === 'rejected') ? 'Backend reconnecting...' : null
+      }
+
+      onUpdate(snapshot)
     } catch (e) {
       onUpdate({ error: e.message })
     }
