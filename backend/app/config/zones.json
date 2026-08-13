@@ -1,0 +1,50 @@
+[
+  {
+    "id": "ZONE A",
+    "name": "Zone A",
+    "description": "Upstream Procession Entry Corridor",
+    "polygon": [
+      [0.02, 0.05],
+      [0.48, 0.05],
+      [0.45, 0.48],
+      [0.02, 0.48]
+    ],
+    "color": "#10b981"
+  },
+  {
+    "id": "ZONE B",
+    "name": "Zone B",
+    "description": "Main Bottleneck & High-Density Corridor",
+    "polygon": [
+      [0.48, 0.05],
+      [0.98, 0.05],
+      [0.98, 0.48],
+      [0.45, 0.48]
+    ],
+    "color": "#ef4444"
+  },
+  {
+    "id": "ZONE C",
+    "name": "Zone C",
+    "description": "Central Procession Flow Corridor",
+    "polygon": [
+      [0.02, 0.48],
+      [0.45, 0.48],
+      [0.48, 0.95],
+      [0.02, 0.95]
+    ],
+    "color": "#f59e0b"
+  },
+  {
+    "id": "ZONE D",
+    "name": "Zone D",
+    "description": "Side Corridor & Exit Support Area",
+    "polygon": [
+      [0.45, 0.48],
+      [0.98, 0.48],
+      [0.98, 0.95],
+      [0.48, 0.95]
+    ],
+    "color": "#3b82f6"
+  }
+]

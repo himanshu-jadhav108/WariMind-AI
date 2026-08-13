@@ -26,6 +26,7 @@ class AppState:
         self.risk = {"score": 0.0, "level": "LOW", "label": "Prototype Risk Estimation"}
         self.recommendation = {"triggered": False, "actions": []}
         self.volunteer_alert = None
+        self.debug_mode = False
         self.events = []              # list of {"time": ..., "message": ...}
         self.error = None
         self._start_time = None
@@ -65,6 +66,11 @@ class AppState:
             self.risk = {"score": 0.0, "level": "LOW", "label": "Prototype Risk Estimation", "components": {}}
             self.recommendation = {"triggered": False, "actions": []}
             self.volunteer_alert = None
+            try:
+                from app.analytics import density
+                density.reset_smoothing()
+            except Exception:
+                pass
             self.events = [{
                 "time": time.strftime("%H:%M:%S"),
                 "message": "System reset to baseline state",
@@ -88,6 +94,7 @@ class AppState:
                 "risk": self.risk,
                 "recommendation": self.recommendation,
                 "volunteer_alert": self.volunteer_alert,
+                "debug_mode": self.debug_mode,
                 "events": self.events[-20:],
                 "error": self.error,
             }
