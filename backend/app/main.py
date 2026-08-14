@@ -13,8 +13,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(message
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logging.info("Auto-starting WariMind AI Scenario Pipeline on backend startup...")
-    _pipeline.start(mode="SCENARIO")
+    logging.info("WariMind AI backend initialized in STANDBY mode. Waiting for user to click START SCENARIO...")
     yield
 
 

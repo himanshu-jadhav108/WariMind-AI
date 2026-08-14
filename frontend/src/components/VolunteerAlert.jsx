@@ -2,12 +2,12 @@ import { useState } from 'react'
 import { AlertTriangle, CheckCircle2, Send, X } from 'lucide-react'
 import { api } from '../services/api'
 
-export default function VolunteerAlert({ alert }) {
+export default function VolunteerAlert({ alert, status }) {
   const [acknowledged, setAcknowledged] = useState(false)
   const [loading, setLoading] = useState(false)
   const [dismissed, setDismissed] = useState(false)
 
-  if (!alert || alert.acknowledged || acknowledged || dismissed) return null
+  if (!alert || alert.acknowledged || acknowledged || dismissed || status === 'IDLE' || status === 'STOPPED') return null
 
   const handleAcknowledge = async () => {
     setLoading(true)

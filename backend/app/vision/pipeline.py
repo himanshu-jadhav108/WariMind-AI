@@ -46,11 +46,11 @@ class VideoPipeline:
         self._create_standby_frame()
 
     def _create_standby_frame(self):
-        frame = np.full((540, 960, 3), (25, 25, 30), dtype=np.uint8)
-        cv2.putText(frame, "WARIMIND AI - VISION ACTIVE", (30, 240), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2, cv2.LINE_AA)
-        cv2.putText(frame, "Live crowd video feed stream initialized", (30, 290), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 220, 255), 1, cv2.LINE_AA)
-        cv2.putText(frame, "RECORDED VIDEO • LIVE FEED SIMULATION", (30, 480), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 180, 180), 1, cv2.LINE_AA)
-        ok_jpg, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+        frame = np.full((540, 960, 3), (15, 23, 42), dtype=np.uint8)  # Slate dark #0F172A
+        cv2.putText(frame, "WARIMIND AI - STANDBY MODE", (30, 230), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(frame, "Click START SCENARIO to begin video processing & live AI monitoring", (30, 280), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (59, 130, 246), 2, cv2.LINE_AA)
+        cv2.putText(frame, "RECORDED VIDEO • LIVE FEED SIMULATION", (30, 480), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (148, 163, 184), 1, cv2.LINE_AA)
+        ok_jpg, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
         if ok_jpg:
             with self._frame_lock:
                 self.last_annotated_jpeg = buf.tobytes()

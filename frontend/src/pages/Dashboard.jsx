@@ -122,7 +122,7 @@ export default function Dashboard() {
       </div>
 
       {/* Dispatch Modal Alert */}
-      <VolunteerAlert alert={data.recommendations?.volunteer_alert} />
+      <VolunteerAlert alert={data.recommendations?.volunteer_alert} status={data.status?.status || data.status} />
     </div>
   )
 }
