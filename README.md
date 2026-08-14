@@ -1,7 +1,7 @@
 # WariMind AI
 
 <p align="center">
-  <img src="WariMind_AI_Logo.jpg" alt="WariMind AI Logo" width="180" />
+  <img src="WariMind_AI_Logo.png" alt="WariMind AI Logo" width="500" />
 </p>
 
 ### AI-Powered Crowd Intelligence & Safety Platform for Wari
@@ -26,7 +26,7 @@ WariMind AI bridges the operational gap between raw computer vision detection an
 
 ## 📌 Overview
 
-During the annual Pandharpur Wari pilgrimage in Maharashtra, India, millions of pilgrims (*warkaris*) walk hundreds of kilometers along narrow procession corridors. Traditional crowd management relies on visual observation and reactive radio communications, making it difficult for organizers to identify emerging bottlenecks before severe congestion or stampede conditions occur.
+During the annual Pandharpur Wari pilgrimage in Maharashtra, India, millions of pilgrims (_warkaris_) walk hundreds of kilometers along narrow procession corridors. Traditional crowd management relies on visual observation and reactive radio communications, making it difficult for organizers to identify emerging bottlenecks before severe congestion or stampede conditions occur.
 
 WariMind AI acts as a **closed-loop crowd intelligence layer**:
 
@@ -49,7 +49,7 @@ flowchart LR
 
 1. **Extreme Pilgrim Density**: Procession bottlenecks accommodate over 100,000 pilgrims within narrow village roads and bridges.
 2. **Limited Volunteer Line-of-Sight**: Ground officers at Post C cannot observe developing congestion 400 meters ahead in Zone B.
-3. **Reactive Emergency Response**: Traditional interventions occur *after* crowd stagnation has already formed.
+3. **Reactive Emergency Response**: Traditional interventions occur _after_ crowd stagnation has already formed.
 4. **Fragmented Information**: Command staff lack a real-time spatial representation (Digital Twin) matching video observations.
 5. **No Pilgrim-Facing Safety Guidance**: Walking pilgrims have no early visibility into downstream congestion or alternate bypass routes.
 
@@ -74,7 +74,7 @@ flowchart TD
     D --> E["<b>DENSITY & FLOW ANALYTICS</b><br/><i>(Spatial Concentration & Vectors ↗ NE)</i>"]:::analytics
     E --> F["<b>PREDICTIVE RISK ENGINE</b><br/><i>(4-Component Weighted Score: 82/100)</i>"]:::risk
     F --> G["<b>AI DECISION ENGINE</b><br/><i>(Automated Recommended Actions & Alerts)</i>"]:::risk
-    
+
     G --> H["<b>COMMAND CENTER UI</b><br/><i>(16:9 Presentation Workspace)</i>"]:::ui
     G --> I["<b>2D DIGITAL TWIN</b><br/><i>(Spatial Route Corridor View)</i>"]:::ui
     G --> J["<b>VOLUNTEER MOBILE</b><br/><i>(390x844 Field Response App)</i>"]:::ui
@@ -85,31 +85,31 @@ flowchart TD
 
 ## ⚡ Why WariMind AI?
 
-| Capability | Traditional Vision Systems | WariMind AI Platform |
-| :--- | :--- | :--- |
-| **Data Scope** | Video $\rightarrow$ Bounding Boxes | Video $\rightarrow$ Detection $\rightarrow$ Spatial Tracking $\rightarrow$ Risk $\rightarrow$ Response |
-| **Small-Object Handling** | Downscales to 640px (misses aerial pilgrims) | High-res 1280px inference tuned for small 15×25px aerial objects |
-| **Zone Assignment** | Arbitrary screen coordinates | OpenCV Point-in-Polygon (`cv2.pointPolygonTest`) on normalized polygons |
-| **Risk Explainability** | Black-box percentage or fixed alert | Transparent 4-component weighted formula (Density, Growth, Flow, Capacity) |
-| **Role Differentiation** | Single admin screen | Command Center (SEE), Risk Engine (PREDICT), Volunteer (ACT), Pilgrim (SAFETY) |
+| Capability                | Traditional Vision Systems                   | WariMind AI Platform                                                                                   |
+| :------------------------ | :------------------------------------------- | :----------------------------------------------------------------------------------------------------- |
+| **Data Scope**            | Video $\rightarrow$ Bounding Boxes           | Video $\rightarrow$ Detection $\rightarrow$ Spatial Tracking $\rightarrow$ Risk $\rightarrow$ Response |
+| **Small-Object Handling** | Downscales to 640px (misses aerial pilgrims) | High-res 1280px inference tuned for small 15×25px aerial objects                                       |
+| **Zone Assignment**       | Arbitrary screen coordinates                 | OpenCV Point-in-Polygon (`cv2.pointPolygonTest`) on normalized polygons                                |
+| **Risk Explainability**   | Black-box percentage or fixed alert          | Transparent 4-component weighted formula (Density, Growth, Flow, Capacity)                             |
+| **Role Differentiation**  | Single admin screen                          | Command Center (SEE), Risk Engine (PREDICT), Volunteer (ACT), Pilgrim (SAFETY)                         |
 
 ---
 
 ## ✨ Key Capabilities
 
-| Capability | Module | What it does |
-| :--- | :--- | :--- |
-| **Person Detection** | `vision/detector.py` | Ultralytics YOLO11 (`yolo11n.pt`) at 1280px resolution with CPU/GPU auto-selection. |
-| **Centroid Tracking** | `vision/tracker.py` | Assigns persistent track IDs across frames and handles track disappearance. |
-| **Point-in-Polygon Zones** | `analytics/density.py` | Maps detection centroids into normalized polygon zones (`zones.json`). |
-| **Temporal Smoothing** | `analytics/density.py` | 5-frame rolling window deque eliminates count flickering. |
-| **Flow Vector Analysis** | `analytics/flow.py` | Calculates crowd movement direction vectors (`↗ NE`) and concentration ratios. |
-| **Predictive Risk Engine** | `analytics/risk.py` | Computes a 0–100 risk score and classifies into LOW, MEDIUM, HIGH, CRITICAL. |
-| **AI Decision Engine** | `decision/decision_engine.py` | Generates actionable checklists and dispatches volunteer mobile alerts. |
-| **2D Digital Twin** | `components/DigitalTwin.jsx` | Real-time spatial Wari route map mirroring backend zone states. |
-| **Volunteer Mobile App** | `pages/VolunteerControlView.jsx` | 390×844 field app showing incident ETA (~5 min), navigation map, and API ACK button. |
-| **Pilgrim Mobile App** | `pages/PilgrimView.jsx` | 390×844 companion app showing 12.4/18.0 km journey progress, amenities, and crowd warnings. |
-| **Pipeline Benchmarking** | `api/routes.py` | Dev-only `/api/benchmark` endpoint exposing live vision diagnostics. |
+| Capability                 | Module                           | What it does                                                                                |
+| :------------------------- | :------------------------------- | :------------------------------------------------------------------------------------------ |
+| **Person Detection**       | `vision/detector.py`             | Ultralytics YOLO11 (`yolo11n.pt`) at 1280px resolution with CPU/GPU auto-selection.         |
+| **Centroid Tracking**      | `vision/tracker.py`              | Assigns persistent track IDs across frames and handles track disappearance.                 |
+| **Point-in-Polygon Zones** | `analytics/density.py`           | Maps detection centroids into normalized polygon zones (`zones.json`).                      |
+| **Temporal Smoothing**     | `analytics/density.py`           | 5-frame rolling window deque eliminates count flickering.                                   |
+| **Flow Vector Analysis**   | `analytics/flow.py`              | Calculates crowd movement direction vectors (`↗ NE`) and concentration ratios.              |
+| **Predictive Risk Engine** | `analytics/risk.py`              | Computes a 0–100 risk score and classifies into LOW, MEDIUM, HIGH, CRITICAL.                |
+| **AI Decision Engine**     | `decision/decision_engine.py`    | Generates actionable checklists and dispatches volunteer mobile alerts.                     |
+| **2D Digital Twin**        | `components/DigitalTwin.jsx`     | Real-time spatial Wari route map mirroring backend zone states.                             |
+| **Volunteer Mobile App**   | `pages/VolunteerControlView.jsx` | 390×844 field app showing incident ETA (~5 min), navigation map, and API ACK button.        |
+| **Pilgrim Mobile App**     | `pages/PilgrimView.jsx`          | 390×844 companion app showing 12.4/18.0 km journey progress, amenities, and crowd warnings. |
+| **Pipeline Benchmarking**  | `api/routes.py`                  | Dev-only `/api/benchmark` endpoint exposing live vision diagnostics.                        |
 
 ---
 
@@ -163,9 +163,11 @@ flowchart TD
 ## 🔬 Computer Vision & Analytics Pipeline
 
 ### 1. High-Resolution Inference (`1280 × 1280`, `conf = 0.20`, `iou = 0.45`)
+
 Aerial drone footage contains small pilgrims occupying ~15×25 pixels. Downscaling frames to 640×640 shrinks pilgrims to ~5×8 pixels, causing object detectors to fail. WariMind AI uses 1280px inference resolution with `conf=0.20` and `iou=0.45`, boosting small-object detection recall by **38x** (detecting 38–80+ active pilgrims per frame) at smooth ~15–18 FPS.
 
 ### 2. Point-in-Polygon Zone Assignment
+
 Instead of using fixed pixel coordinates, zones are defined as normalized polygon vertices `[x_norm, y_norm]` in `backend/app/config/zones.json` (values ranging `0.0` to `1.0`). For each detection centroid $(cx, cy)$:
 
 $$\text{Point-in-Polygon Test: } \text{cv2.pointPolygonTest}(\text{polygon\_px}, (cx, cy), \text{measureDist}=\text{False})$$
@@ -173,7 +175,9 @@ $$\text{Point-in-Polygon Test: } \text{cv2.pointPolygonTest}(\text{polygon\_px},
 A detection is assigned to a zone if the result is $\ge 0$.
 
 ### 3. Metric Distinction: Active Detected vs Estimated Crowd Size
+
 To remain technically honest, WariMind AI clearly distinguishes between two metrics:
+
 - **`ACTIVE DETECTED PEOPLE`**: Exact count of real YOLO tracked bounding boxes currently in frame.
 - **`ESTIMATED CROWD`**: Hybrid spatial density estimation ($N_{\text{active}} \times \text{Density Multiplier} \approx 327$) representing the full physical corridor capacity.
 
@@ -186,6 +190,7 @@ The Risk Engine (`backend/app/analytics/risk.py`) computes a transparent 0–100
 $$\text{Risk Score} = 0.40 \cdot S_{\text{density}} + 0.25 \cdot S_{\text{growth}} + 0.20 \cdot S_{\text{flow}} + 0.15 \cdot S_{\text{capacity}}$$
 
 Where:
+
 - $S_{\text{density}}$: Current zone density relative to threshold ($0\text{--}100$).
 - $S_{\text{growth}}$: Rate of crowd accumulation calculated over a 10-sample rolling window (`backend/app/prediction/trend.py`).
 - $S_{\text{flow}}$: Concentration ratio of directional movement vectors towards bottleneck corridors.
@@ -215,12 +220,14 @@ The Digital Twin (`frontend/src/components/DigitalTwin.jsx`) provides a 2D spati
 WariMind AI includes role-differentiated mobile interfaces rendered inside a 390×844 smartphone bezel (`MobileFrame.jsx`):
 
 ### 1. Volunteer Field Response App (`VolunteerControlView.jsx`)
+
 - **Role**: Field officer response (**ACT**).
 - **Incident Alert**: `🚨 HIGH PRIORITY — GO TO ZONE B` with Distance **420 m** and **~5 min ETA**.
 - **Navigation Map**: `RouteMap` in volunteer mode showing path from Post C to Zone B & Medical Camp 1.
 - **Backend ACK**: Real **`[ ACKNOWLEDGE DISPATCH ]`** button calling `POST /api/volunteer/acknowledge` to update the global system state and live event log (`✓ RESPONSE ACKNOWLEDGED`).
 
 ### 2. Pilgrim Safety Companion App (`PilgrimView.jsx`)
+
 - **Role**: Pilgrim situational awareness (**SAFETY**).
 - **Journey Progress**: `TODAY'S JOURNEY: 12.4 / 18.0 km` progress bar (68.8%) and Next Halt `Pandharpur Sector 2 (2.4 km away)`.
 - **Dynamic Crowd Warning**: Displays **`⚠️ CROWDED AREA AHEAD — Consider alternate route via Sector 2`** banner when downstream Zone B/D risk is HIGH.
@@ -231,16 +238,16 @@ WariMind AI includes role-differentiated mobile interfaces rendered inside a 390
 
 ## 🛠 Tech Stack Matrix
 
-| Layer | Technology | Purpose |
-| :--- | :--- | :--- |
-| **Frontend Framework** | React 18 + Vite | Modern reactive dashboard UI. |
-| **Styling** | Vanilla CSS + TailwindCSS | Light Professional Emergency Management Operations theme (`#F7F8FA`). |
-| **Typography** | Plus Jakarta Sans & JetBrains Mono | Strong typographic hierarchy and monospace metric display. |
-| **Backend Framework** | FastAPI + Uvicorn | Asynchronous Python REST API server. |
-| **Vision Inference** | Ultralytics YOLO11 Nano (`yolo11n.pt`) | Person detection (`classes=[0]`) at 1280px resolution. |
-| **Vision Processing** | OpenCV Python (`cv2`) | Point-in-Polygon calculations, video capture, and annotated MJPEG streaming. |
-| **State Management** | Python `AppState` (Thread-Safe) | Single source of truth for density, risk, decisions, and event logs. |
-| **Testing** | `pytest` & `unittest` | 24 core automated unit and API integration tests. |
+| Layer                  | Technology                             | Purpose                                                                      |
+| :--------------------- | :------------------------------------- | :--------------------------------------------------------------------------- |
+| **Frontend Framework** | React 18 + Vite                        | Modern reactive dashboard UI.                                                |
+| **Styling**            | Vanilla CSS + TailwindCSS              | Light Professional Emergency Management Operations theme (`#F7F8FA`).        |
+| **Typography**         | Plus Jakarta Sans & JetBrains Mono     | Strong typographic hierarchy and monospace metric display.                   |
+| **Backend Framework**  | FastAPI + Uvicorn                      | Asynchronous Python REST API server.                                         |
+| **Vision Inference**   | Ultralytics YOLO11 Nano (`yolo11n.pt`) | Person detection (`classes=[0]`) at 1280px resolution.                       |
+| **Vision Processing**  | OpenCV Python (`cv2`)                  | Point-in-Polygon calculations, video capture, and annotated MJPEG streaming. |
+| **State Management**   | Python `AppState` (Thread-Safe)        | Single source of truth for density, risk, decisions, and event logs.         |
+| **Testing**            | `pytest` & `unittest`                  | 24 core automated unit and API integration tests.                            |
 
 ---
 
@@ -292,23 +299,27 @@ WariMind_AI/
 ## 🚀 Getting Started & Local Setup
 
 ### Prerequisites
+
 - **Python**: Version 3.10 or higher
 - **Node.js**: Version 18 or higher (npm)
 - **Hardware**: CPU supported automatically; NVIDIA CUDA GPU used automatically if available.
 
 ### Step 1 — Clone Repository
+
 ```bash
 git clone https://github.com/himanshu-jadhav108/WariMind-AI.git
 cd WariMind-AI
 ```
 
 ### Step 2 — Backend Setup
+
 ```bash
 cd backend
 pip install -r requirements.txt
 ```
 
 ### Step 3 — Frontend Setup
+
 ```bash
 cd frontend
 npm install
@@ -317,12 +328,14 @@ npm install
 ### Step 4 — Launch Application
 
 **Terminal 1 (Backend Server):**
+
 ```bash
 cd backend
 python -m uvicorn app.main:app --reload --port 8000
 ```
 
 **Terminal 2 (Frontend Server):**
+
 ```bash
 cd frontend
 npm run dev
@@ -352,18 +365,19 @@ Open `http://localhost:5173` in your browser.
 
 Empirical benchmarks evaluated on 1920×1080 aerial drone Wari footage (`demo_crowd.mp4`):
 
-| Configuration | Resolution | Conf Cutoff | Detections / Frame | Inference Time (CPU) | Frame FPS |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| Default YOLO | 640 × 640 | 0.35 | 1 person | ~600 ms | ~20 FPS |
-| High-Res (WariMind) | **1280 × 1280** | **0.20** | **38–80+ people** | **~1.1 s** | **~15–18 FPS** |
+| Configuration       | Resolution      | Conf Cutoff | Detections / Frame | Inference Time (CPU) | Frame FPS      |
+| :------------------ | :-------------- | :---------- | :----------------- | :------------------- | :------------- |
+| Default YOLO        | 640 × 640       | 0.35        | 1 person           | ~600 ms              | ~20 FPS        |
+| High-Res (WariMind) | **1280 × 1280** | **0.20**    | **38–80+ people**  | **~1.1 s**           | **~15–18 FPS** |
 
-*Note: Benchmarks performed on standard x86 CPU architecture; GPU acceleration increases frame rate to >30 FPS.*
+_Note: Benchmarks performed on standard x86 CPU architecture; GPU acceleration increases frame rate to >30 FPS._
 
 ---
 
 ## ⚠️ Prototype Limitations
 
 To maintain complete technical credibility, the following prototype boundaries are explicitly disclosed:
+
 1. **Video Feed**: The prototype streams pre-recorded aerial drone Wari footage (`demo_crowd.mp4`) via an MJPEG route (`/api/video/feed`) to simulate a live CCTV/drone feed.
 2. **Camera Infrastructure**: Monitored procession zones (A, B, C, D) are defined on a single elevated camera perspective. Multi-camera stitching is planned for future iterations.
 3. **Emergency Dispatch Integration**: Volunteer alerts and Pilgrim SOS broadcasts update the internal system state and event log; integration with government emergency management software (e.g., 112/108) is simulated.
@@ -381,6 +395,7 @@ To maintain complete technical credibility, the following prototype boundaries a
 ## 🔒 Privacy & Responsible AI
 
 WariMind AI is engineered specifically for **group crowd analytics and spatial safety**:
+
 - **No Facial Recognition**: The vision pipeline executes person detection (`class=0`) only. No biometric facial recognition, identity tracking, or personal data collection is performed.
 - **Data Minimization**: Only bounding box centroids and zone counts are stored in shared memory. Video frames are processed in-stream and are not permanently archived.
 - **Human-in-the-Loop**: AI Decision Engine outputs serve as decision support recommendations for human incident commanders and volunteers, who retain full authority over field dispatches.
@@ -395,7 +410,8 @@ Run the automated backend test suite (covering core logic, risk calculations, zo
 cd backend
 pytest
 ```
-*Result: **24 passed** in 0.54s.*
+
+_Result: **24 passed** in 0.54s._
 
 Verify frontend build compilation:
 
@@ -403,7 +419,8 @@ Verify frontend build compilation:
 cd frontend
 npm run build
 ```
-*Result: **vite build completed clean** in 2.37s.*
+
+_Result: **vite build completed clean** in 2.37s._
 
 ---
 
